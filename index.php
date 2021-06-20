@@ -8,8 +8,11 @@ $urls = array_filter(explode("\n", stream_get_contents($urls))); //remove empty 
 $itemz = $title = $description = $link = "";
 
 foreach ($urls as $url) {
-
-    $feeds = simplexml_load_file(filter_var($url, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW));
+    $feeds = @simplexml_load_file(filter_var($url, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW)); //@ supress errors, but dont worry...
+    if ($feeds === false) {
+        // on error ignore dead link/down page/any error...
+        continue;
+    }
 
     $wanted = array();
     $myfile = fopen("wanted.txt", "r") or die("Unable to open file!");
