@@ -2,3 +2,4 @@
 excluded.txt
 rss_list.txt
 wanted.txt
+*.xml
