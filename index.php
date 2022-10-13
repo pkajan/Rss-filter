@@ -56,6 +56,7 @@ if ($allowedToRun) {
     }
     fclose($myfile);
     $wanted = array_filter($wanted);
+    $wanted = array_map('strtolower', $wanted);
 
     // read excluded file
     $excluded = array();
@@ -79,7 +80,7 @@ if ($allowedToRun) {
     foreach ($mergedRSSData as $item) {
         $name = (string) $item["title"];
 
-        if (array_search_partial($wanted, $name)) { //search if title include string from "wanted" file
+        if (array_search_partial($wanted, strtolower($name))) { //search if title include string from "wanted" file
             if (!array_search_partial($excluded, $name)) { //search if title doesnt include string from "excluded" file
                 array_push($filteredRSSData, $item); // if title is in included and mot in excluded add to second array
             }
@@ -93,7 +94,7 @@ if ($allowedToRun) {
     });
 
     //header of RSS
-    echo "<rss version=\"2.0\"><channel><title>Combined RSS</title><description>Combined RSS feed: " . implode(" | ", $rssNames) . "</description>\n";
+    echo "<rss version=\"2.0\"><channel>\n<title>Combined RSS</title>\n<description>Combined RSS feed: " . implode(" | ", $rssNames) . "</description>\n";
 
 
     foreach ($array as $item) {
@@ -102,7 +103,7 @@ if ($allowedToRun) {
         $rssItemBody .= "<item>\n";
         $rssItemBody .= "<title>" . (isset($item["title"][0]) ? $item["title"][0] : "") . "</title>\n";
         $rssItemBody .= "<link>" . (isset($item["link"][0]) ? htmlspecialchars($item["link"][0]) : "") . "</link>\n";
-        $rssItemBody .= "<guid>" . (string)implode(";", array_filter((array)$item["guid"][0])) . "</guid>\n";
+        $rssItemBody .= "<guid>" . str_replace("Array;", "", (string)implode(";", array_filter((array)$item["guid"][0]))) . "</guid>\n";
         $rssItemBody .= "<pubDate>" . (isset($item["pubDate"][0]) ? $item["pubDate"][0] : "") . "</pubDate>\n";
         $rssItemBody .=
             isset($item["description"][0]) ?
